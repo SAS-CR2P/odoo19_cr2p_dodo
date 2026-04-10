@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Remplacement des stages par défaut d'Odoo par les stages CR2P -->
+    <!-- On écrase les stages existants -->
+
+    <record model="crm.stage" id="crm.stage_lead1">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="color">11</field>
+        <field name="fold" eval="False"/>
+        <field name="requirements">Lead entré par API. Charlène contacte le lead et met à jour la fiche.</field>
+    </record>
+
+    <record model="crm.stage" id="cr2p_stage_r1">
+        <field name="name">R1</field>
+        <field name="sequence">10</field>
+        <field name="color">5</field>
+        <field name="fold" eval="False"/>
+        <field name="requirements">Premier RDV positionné. Le commercial doit faire le debriefing avant de changer d'étape.</field>
+    </record>
+
+    <record model="crm.stage" id="cr2p_stage_r2">
+        <field name="name">R2</field>
+        <field name="sequence">20</field>
+        <field name="color">8</field>
+        <field name="fold" eval="False"/>
+        <field name="requirements">Deuxième RDV positionné. Le commercial doit faire le debriefing avant de changer d'étape.</field>
+    </record>
+
+    <record model="crm.stage" id="cr2p_stage_proposition">
+        <field name="name">Proposition</field>
+        <field name="sequence">30</field>
+        <field name="color">9</field>
+        <field name="fold" eval="False"/>
+        <field name="requirements">Proposition envoyée au client.</field>
+    </record>
+
+    <record model="crm.stage" id="cr2p_stage_devis_signe">
+        <field name="name">Devis Signé</field>
+        <field name="sequence">40</field>
+        <field name="is_won">True</field>
+        <field name="color">10</field>
+        <field name="fold" eval="False"/>
+    </record>
+
+    <record model="crm.stage" id="cr2p_stage_non_valide">
+        <field name="name">Lead non valide</field>
+        <field name="sequence">50</field>
+        <field name="color">1</field>
+        <field name="fold" eval="True"/>
+        <field name="requirements">Debriefing obligatoire avant de placer un lead ici.</field>
+    </record>
+
+    <!-- Masquer les stages Odoo par défaut qu'on n'utilise plus -->
+    <record model="crm.stage" id="crm.stage_lead2">
+        <field name="name">Qualified (obsolète)</field>
+        <field name="sequence">99</field>
+        <field name="fold" eval="True"/>
+    </record>
+    <record model="crm.stage" id="crm.stage_lead3">
+        <field name="name">Proposition (obsolète)</field>
+        <field name="sequence">100</field>
+        <field name="fold" eval="True"/>
+    </record>
+    <record model="crm.stage" id="crm.stage_lead4">
+        <field name="name">Won (obsolète)</field>
+        <field name="sequence">101</field>
+        <field name="fold" eval="True"/>
+        <field name="is_won" eval="False"/>
+    </record>
+
+</odoo>

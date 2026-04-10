@@ -1,0 +1,43 @@
+<odoo>
+    <template id="report_saleorder_custom" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//td[@name='td_product_name']" position="replace">
+            <td name="td_product_name">
+                <span t-out="line.name">Bacon Burger</span>
+            </td>
+        </xpath>
+
+        <xpath expr="//div[@name='signature']" position="after">
+            <!-- Ajoutez votre contenu personnalisé ici -->
+            <div t-if="doc.is_financing_payment_term">
+                <h3>Financement</h3>
+                <table class="table table-sm">
+                    <tr>
+                        <td>Versement à la commande:</td>
+                        <td><span t-field="doc.versement_commande"/></td>
+                    </tr>
+                    <tr>
+                        <td>Versement à la pose:</td>
+                        <td><span t-field="doc.versement_pose"/></td>
+                    </tr>
+                    <!-- Ajoutez d'autres lignes selon vos champs -->
+                </table>
+            </div>
+        </xpath>
+        <xpath expr="//div[@name='total']" position="before">
+            <div id="remise" class="row" name="remise">
+                <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                    <table class="table table-sm table-borderless">
+                        <!-- Tax totals -->
+                        <tr t-if="doc.total_discount_percent" >
+                            <td>Remise totale:</td>
+                            <td><span
+                                t-out="doc.total_discount"
+                                t-options='{"widget": "monetary", "display_currency": doc.currency_id}'
+                            >31.05</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

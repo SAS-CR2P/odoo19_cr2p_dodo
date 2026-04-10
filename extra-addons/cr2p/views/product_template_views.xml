@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="membership_products_form">
+            <field name="name">Membership Products</field>
+            <field name="model">product.template</field>
+            <field name="priority">50</field>
+            <field name="arch" type="xml">
+                <field
+                        name="description_sale"
+                        nolabel="1"
+                        widget="html"
+                        placeholder="This description will be shown on e-commerce frontend"
+                    />
+            </field>
+        </record>
+    </data>
+</odoo>

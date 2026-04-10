@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="sale_order_cerfa_cgv" model="sale.order.template">
+        <field name="name">Loi HAMON</field>
+        <field name="number_of_days">30</field>
+        <field name="sale_header"
+               type="base64"
+               file="cr2p/static/cerfa + conditions reglement.pdf"/>
+        <field name="sale_header_name">cerfa + conditions reglement.pdf</field>
+        <field name="sale_footer"
+               type="base64"
+               file="cr2p/static/cgv.pdf"/>
+        <field name="sale_footer_name">cgv.pdf</field>    
+        <field name="require_payment" eval="False"/>
+    </record>
+</odoo>

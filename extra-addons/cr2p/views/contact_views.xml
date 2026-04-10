@@ -1,0 +1,263 @@
+<odoo>
+    <data>
+        <record id="view_partner_tree_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="replace">
+                    <list string="Contacts" sample="1" multi_edit="1">
+                        <field name="name" string="Name" />
+                        <field name="code" string="Code" />
+                        <field name="company_registry" optional="hide" readonly="1" />
+                        <field name="vat" optional="hide" readonly="1" />
+                        <field name="phone" class="o_force_ltr" optional="show" />
+                        <field name="phone2" class="o_force_ltr" optional="show" />
+                        <field name="email" optional="show" />
+                        <field name="email2" optional="show" />
+                        <field name="commune_livraison" optional="show" />
+                        <field name="departement_livraison" optional="show" />
+                        <field name="type_contact" optional="show" widget="badge"
+                            decoration-info="type_contact == 'prospect'"
+                            decoration-success="type_contact == 'client'"
+                            decoration-warning="type_contact == 'actif'" />
+                        <field name="user_id" optional="show" domain="[('share', '=', False)]" />
+                        <field name="rdv_telepro" optional="hide" />
+                        <field name="create_date" optional="hide" />
+                    </list>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_partner_filter_inherit_cr2p" model="ir.ui.view">
+            <field name="name">res.partner.select.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter" />
+            <field name="arch" type="xml">
+                <!-- Safe replacement for the main search field -->
+                <xpath expr="//field[@name='name']" position="replace">
+                    <field name="name"
+                        filter_domain="['|', '|', '|', '|', '|', '|', '|', ('name', 'ilike', self), ('prenom', '=', self), ('nom', '=', self), ('prenom2', 'ilike', self), ('nom2', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]" />
+                </xpath>
+                <!-- Apends to the search view safely without breaking if base view is altered -->
+                <xpath expr="//search" position="inside">
+                    <field name="code" string="Code" />
+                    <!-- Extended fields for email and phone -->
+                    <field name="email2" string="Email (étendu)"
+                        filter_domain="['|', ('email', 'ilike', self), ('email2', 'ilike', self)]" />
+                    <field name="phone2" string="Téléphone (étendu)"
+                        filter_domain="['|', ('phone', 'ilike', self), ('phone2', 'ilike', self)]" />
+                    <separator/>
+                    <filter string="Fiches jointes" name="ajouter_contact2"
+                        domain="[('ajouter_contact2', '=', True)]" />
+                </xpath>
+                <!-- Add new group by safely -->
+                <xpath expr="//group" position="inside">
+                    <filter name="group_commune" string="Communes"
+                        context="{'group_by': 'commune'}" />
+                    <filter name="group_departement" string="Départements"
+                        context="{'group_by': 'departement'}" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <!-- Suppression des champs inutiles -->
+                <xpath expr="//span[@name='address_name']/ancestor::group[1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='parent_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='website']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='email']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='function']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='contact_addresses']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!-- <xpath expr="//field[@name='image_1920']" position="before">
+                    <attribute name="invisible">1</attribute>
+                </xpath> -->
+                <!-- Ajout des champs -->
+                <xpath expr="//field[@name='image_1920']" position="after">
+                    <group string="Statut contact">
+                        <field name="type_contact" widget="badge"
+                            decoration-info="type_contact == 'prospect'"
+                            decoration-success="type_contact == 'client'"
+                            decoration-warning="type_contact == 'actif'" />
+                        <field name="type_contact" groups="base.group_system"
+                            string="Modification type de contact" />
+                        <field name="source_contacts_parent" string="Source" />
+                        <field name="source_contacts_enfant"
+                            domain="[('parent', '=', source_contacts_parent)]" />
+                        <field name="rdv_telepro" />
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='rdv_telepro']" position="after">
+                    <field name="code" readonly="1" />
+                </xpath>
+                <!-- Placer après le champ phone -->
+                <xpath expr="//notebook" position="before">
+                    <group>
+                    <!-- Particulier -->
+                        <group name="informations_particulier" string="Informations personne 1"
+                            invisible="is_company">
+                            <field name="align_contact" readonly="1" />
+                            <field name="civilite" invisible="is_company"
+                                required="not is_company"
+                                placeholder="Sélectionnez une civilité" />
+                            <field name="prenom" invisible="is_company"
+                                required="not is_company"
+                                placeholder="Prénom" />
+                            <field name="nom" invisible="is_company" required="not is_company"
+                                placeholder="Nom" />
+                            <field name="actif_retraite" invisible="is_company" />
+                            <field name="date_naissance" invisible="is_company"
+                                placeholder="Renseignez ou sélectionnez une date de naissance" />
+                            <field name="age" invisible="is_company" />
+
+                            <field name="phone1" string="Téléphone" widget="phone"
+                                placeholder="Téléphone" />
+                            <field name="email1" string="Email" widget="email"
+                                placeholder="Email" />
+                        </group>
+                        <!-- Entreprise -->
+                        <group name="informations_societe" string="Informations sur la société"
+                            invisible="not is_company">
+                            <field name="raison_sociale" invisible="not is_company"
+                                placeholder="Raison sociale"
+                                required="is_company" />
+                            <field name="forme_juridique" invisible="not is_company"
+                                placeholder="Sélectioner une forme juridique"
+                                required="is_company" />
+                            <field name="company_registry" invisible="not is_company"
+                                placeholder="Numéro de SIRET"
+                                required="is_company" />
+                            <field name="vat" invisible="not is_company" required="vat"
+                                placeholder="Numéro de TVA" />
+                            <field name="civilite_correspondant" invisible="not is_company"
+                                placeholder="Sélectioner une civilité"
+                                required="is_company" />
+                            <field name="prenom_correspondant" invisible="not is_company"
+                                placeholder="Prénom"
+                                required="is_company" />
+                            <field name="nom_correspondant" invisible="not is_company"
+                                placeholder="Nom"
+                                required="is_company" />
+                            <field name="date_naissance_correspondant"
+                                placeholder="Sélectionner une date de naissance"
+                                invisible="not is_company" />
+                            <field name="age_correspondant" invisible="not is_company" />
+                            <field name="fonction_correspondant" invisible="not is_company"
+                                placeholder="Sélectioner une fonction"
+                                required="is_company" />
+                            <field name="telephone_correspondant" invisible="not is_company"
+                                placeholder="Téléphone"
+                                required="is_company" widget="phone" />
+                            <field name="email_correspondant" invisible="not is_company"
+                                placeholder="Email"
+                                required="is_company" widget="email" />
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//group[@name='informations_societe']" position="after">
+                    <group name="informations_particulier_2"
+                        string="Informations personne 2" invisible="is_company">
+                        <field name="ajouter_contact2" invisible="is_company" />
+                        <field name="civilite2" placeholder="Sélectioner une civilité"
+                            required="not is_company or ajouter_contact2" invisible="is_company or not ajouter_contact2" />
+                        <field name="prenom2" placeholder="Prénom"
+                            required="not is_company or ajouter_contact2" invisible="is_company or not ajouter_contact2" />
+                        <field name="nom2" placeholder="Nom"
+                            required="not is_company or ajouter_contact2" invisible="is_company or not ajouter_contact2" />
+                        <field name="actif_retraite2"
+                            invisible="is_company or not ajouter_contact2" />
+                        <field name="date_naissance2"
+                            placeholder="Sélectionner une date de naissance"
+                            invisible="is_company or not ajouter_contact2" />
+                        <field name="age2" invisible="is_company or not ajouter_contact2" />
+                        <field name="phone2" widget="phone" placeholder="Téléphone"
+                            invisible="is_company or not ajouter_contact2" />
+                        <field name="email2" widget="email" placeholder="Email"
+                            invisible="is_company or not ajouter_contact2" />
+                    </group>
+
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='sales_purchases']" position="before">
+                    <page string="Addresses">
+                        <group col="3">
+                            <group string="Adresse principale">
+                                <field name="align_address" readonly="1" />
+                                <field name="align_address" readonly="1" />
+                                <field name="rue" placeholder="Rue" />
+                                <field name="rue_complement" placeholder="Rue complément" />
+                                <field name="code_postal" placeholder="Code postal" />
+                                <field name="commune" placeholder="Commune"
+                                    options="{'no_open': True, 'no_create': True}" />
+                                <field name="departement" placeholder="Département" />
+                            </group>
+
+                            <group string="Adresse de facturation">
+                                <field name="duplicate_address_facturation"
+                                    string="Idem adresse principale" />
+                                <field name="rue_facturation" placeholder="Rue (Facturation)"
+                                    invisible="duplicate_address_facturation" />
+                                <field name="rue_complement_facturation"
+                                    placeholder="Rue complément (Facturation)"
+                                    invisible="duplicate_address_facturation" />
+                                <field name="code_postal_facturation"
+                                    placeholder="Code postal (Facturation)"
+                                    invisible="duplicate_address_facturation" />
+                                <field name="commune_facturation"
+                                    placeholder="Commune (Facturation)"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    invisible="duplicate_address_facturation" />
+                                <field name="departement_facturation"
+                                    placeholder="Département (Facturation)"
+                                    invisible="duplicate_address_facturation" />
+                            </group>
+
+                            <group string="Adresse de livraison">
+                                <field name="duplicate_address_livraison"
+                                    string="Idem adresse principale" />
+                                <field name="rue_livraison" placeholder="Rue (Livraison)"
+                                    invisible="duplicate_address_livraison" />
+                                <field name="rue_complement_livraison"
+                                    placeholder="Rue complément (Livraison)"
+                                    invisible="duplicate_address_livraison" />
+                                <field name="code_postal_livraison"
+                                    placeholder="Code postal (Livraison)"
+                                    invisible="duplicate_address_livraison" />
+                                <field name="commune_livraison" placeholder="Commune (Livraison)"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    invisible="duplicate_address_livraison" />
+                                <field name="departement_livraison"
+                                    placeholder="Département (Livraison)"
+                                    invisible="duplicate_address_livraison" />
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

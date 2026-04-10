@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+cr2p.access_commune_user,access_commune_user,cr2p.model_commune,base.group_user,1,0,0,0
+cr2p.access_commune_system,access_commune_system,cr2p.model_commune,base.group_system,1,1,1,1
+cr2p.access_fonction_user,access_fonction_user,cr2p.model_fonction,base.group_user,1,0,0,0
+cr2p.access_fonction_system,access_fonction_system,cr2p.model_fonction,base.group_system,1,1,1,1
+cr2p.access_forme_juridique_user,access_forme_juridique_user,cr2p.model_forme_juridique,base.group_user,1,0,0,0
+cr2p.access_forme_juridique_system,access_forme_juridique_system,cr2p.model_forme_juridique,base.group_system,1,1,1,1
+cr2p.access_source_contacts_user,access_source_contacts_user,cr2p.model_source_contacts,base.group_user,1,0,0,0
+cr2p.access_source_contacts_system,access_source_contacts_system,cr2p.model_source_contacts,base.group_system,1,1,1,1
+cr2p.access_source_contacts_enfant_user,access_source_contacts_enfant_user,cr2p.model_source_contacts_enfant,base.group_user,1,0,0,0
+cr2p.access_source_contacts_enfant_system,access_source_contacts_enfant_system,cr2p.model_source_contacts_enfant,base.group_system,1,1,1,1
+cr2p.access_cerfa_user,access_cerfa_user,cr2p.model_sale_order_cerfa,base.group_user,1,1,1,0
+cr2p.access_cerfa_system,access_cerfa_system,cr2p.model_sale_order_cerfa,base.group_system,1,1,1,1

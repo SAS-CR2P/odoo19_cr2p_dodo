@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Quick Create Form: remove commercial_partner_id,             -->
+    <!-- partner_id shows both companies and contacts                 -->
+    <!-- ============================================================ -->
+    <record id="quick_create_opportunity_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.quick_create.cr2p</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Remove the commercial_partner_id row entirely -->
+            <xpath expr="//field[@name='commercial_partner_id']/parent::div" position="replace"/>
+
+            <!-- Replace partner_id div: new icon + field without is_company domain -->
+            <xpath expr="//field[@name='partner_id']/parent::div" position="replace">
+                <div class="d-flex align-items-center" colspan="2">
+                    <i class="fa fa-building" title="Client"/>
+                    <field name="partner_id"
+                        widget="res_partner_many2one"
+                        nolabel="1"
+                        class="o_field_highlight w-100 mb-0"
+                        placeholder="Client"
+                        string="Client"
+                        context="{
+                            'res_partner_search_mode': type == 'opportunity' and 'customer' or False,
+                            'default_name': contact_name or partner_name,
+                            'default_type': 'contact',
+                            'default_phone': phone,
+                            'default_email': email_from,
+                            'default_user_id': user_id,
+                            'default_team_id': team_id,
+                            'show_vat': True}"
+                    />
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Main Form: remove commercial_partner_id references           -->
+    <!-- from partner_id contexts + add new CR2P fields               -->
+    <!-- ============================================================ -->
+    <record id="crm_lead_view_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.cr2p</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- lead_partner group: remove commercial_partner_id from context -->
+            <xpath expr="//group[@name='lead_partner']//field[@name='partner_id']" position="replace">
+                <field name="partner_id" widget="res_partner_many2one"
+                    string="Client"
+                    context="{
+                        'default_name': contact_name,
+                        'default_street': street,
+                        'default_street2': street2,
+                        'default_city': city,
+                        'default_state_id': state_id,
+                        'default_zip': zip,
+                        'default_country_id': country_id,
+                        'default_function': function,
+                        'default_phone': phone,
+                        'default_email': email_from,
+                        'default_user_id': user_id,
+                        'default_team_id': team_id,
+                        'default_website': website,
+                        'default_lang': lang_code,
+                    }" invisible="not is_partner_visible"/>
+            </xpath>
+
+            <!-- opportunity_partner group: clean partner_id context (no commercial_partner_id) -->
+            <xpath expr="//group[@name='opportunity_partner']//field[@name='partner_id']" position="replace">
+                <field name="partner_id"
+                    widget="res_partner_many2one"
+                    string="Client"
+                    context="{'res_partner_search_mode': type == 'opportunity' and 'customer' or False,
+                        'default_name': contact_name or partner_name,
+                        'default_street': street,
+                        'default_is_company': type == 'opportunity' and contact_name == False,
+                        'default_company_name': type == 'opportunity' and partner_name,
+                        'default_street2': street2,
+                        'default_city': city,
+                        'default_state_id': state_id,
+                        'default_zip': zip,
+                        'default_country_id': country_id,
+                        'default_function': function,
+                        'default_phone': phone,
+                        'default_email': email_from,
+                        'default_user_id': user_id,
+                        'default_team_id': team_id,
+                        'default_website': website,
+                        'default_lang': lang_code,
+                        'show_vat': True,
+                    }"
+                />
+            </xpath>
+
+            <!-- Add CR2P fields in opportunity_partner group -->
+            <xpath expr="//group[@name='opportunity_partner']//field[@name='user_company_ids']" position="after">
+                <field name="cr2p_quote_status"/>
+                <field name="cr2p_quote_amount" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                <field name="cr2p_product_type_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </xpath>
+
+            <!-- Rename "Notes" tab to "Debriefing" and add debrief fields -->
+            <xpath expr="//notebook/page[@name='internal_notes']" position="attributes">
+                <attribute name="string">Debriefing</attribute>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='internal_notes']/field[@name='description']" position="before">
+                <group>
+                    <field name="cr2p_debrief_done" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                        invisible="cr2p_debrief_done">
+                        <strong>Debriefing requis</strong> — Vous devez remplir le debriefing avant de pouvoir changer d'étape.
+                    </div>
+                    <div class="alert alert-success" role="alert"
+                        invisible="not cr2p_debrief_done">
+                        <strong>Debriefing effectué</strong>
+                    </div>
+                </group>
+                <field name="cr2p_debrief" placeholder="Saisissez le compte-rendu du rendez-vous..."
+                    options="{'collaborative': true}"/>
+                <separator string="Notes"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Kanban: add CR2P badges (quote status, amount, product type) -->
+    <!-- ============================================================ -->
+    <record id="crm_case_kanban_view_leads_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.cr2p</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+
+            <!-- Insert CR2P badges after tag_ids in kanban card -->
+            <xpath expr="//t[@t-name='card']//field[@name='tag_ids']" position="after">
+                <div class="d-flex flex-wrap gap-1 mt-1">
+                    <!-- Badge état du devis -->
+                    <field name="cr2p_quote_status" widget="badge"
+                        decoration-info="cr2p_quote_status == 'draft'"
+                        decoration-success="cr2p_quote_status == 'accepted'"
+                        decoration-danger="cr2p_quote_status in ('cancelled', 'refused')"
+                        decoration-warning="cr2p_quote_status == 'invoiced'"
+                        invisible="not cr2p_quote_status"/>
+                    <!-- Badge montant -->
+                    <span t-if="record.cr2p_quote_amount.raw_value" class="badge text-bg-primary">
+                        <field name="cr2p_quote_amount" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    </span>
+                    <!-- Tags types de produit -->
+                    <field name="cr2p_product_type_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

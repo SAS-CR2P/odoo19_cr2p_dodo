@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_forme_juridique_form" model="ir.ui.view">
+        <field name="name">forme_juridique form</field>
+        <field name="model">forme_juridique</field>
+        <field name="arch" type="xml">
+            <form string="Forme juridique">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_forme_juridique_tree" model="ir.ui.view">
+        <field name="name">forme_juridique tree</field>
+        <field name="model">forme_juridique</field>
+        <field name="arch" type="xml">
+            <list string="Forme juridique">
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_forme_juridique" model="ir.actions.act_window">
+        <field name="name">Formes juridique</field>
+        <field name="res_model">forme_juridique</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_forme_juridique" name="Formes juridique"
+              action="action_forme_juridique"
+              parent="contacts.res_partner_menu_config"
+              groups="base.group_system"/>
+</odoo>

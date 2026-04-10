@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sale_order_report">
+            <field name="name">Second Salesman</field>
+            <field name="inherit_id" ref="sale.report_saleorder_document" />
+            <field name="type">qweb</field>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@t-field='doc.user_id']" position="after">
+                    <br/>
+                    <span class="m-0" t-if="doc.second_salesperson_id.name" t-field="doc.second_salesperson_id">Marc Demo</span>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,147 @@
+<odoo>
+    <record id="view_res_config_settings_inherited" model="ir.ui.view">
+        <field name="name">res.config.settings.inherited</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='pricing_setting_container']" position="inside">
+                <setting id="discount_settings" title="Paramètres de remises" help="">
+                    <label for="discount_normal_max" string="Remise standard" />
+                    <field name="discount_normal_max"/>
+                    <label for="discount_warning_message" string="Message d'avertissement" />
+                    <field name="discount_warning_message"/>
+                    <label for="discount_max_allowed" string="Remise maximale autorisée" />
+                    <field name="discount_max_allowed"/>
+                    <label for="discount_max_warning_message" string="Message d'avertissement" />
+                    <field name="discount_max_warning_message"/>
+                    
+               </setting>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning oe_edit_only" role="alert" name="warning_discount" invisible="not is_discount_degradation or is_high_discount">
+                    <field name="discount_warning_message"/> Réévaluer la remise totale à moins de <field name="discount_normal_max"/>%
+                </div>
+                <div class="alert alert-warning oe_edit_only" role="alert" name="warning_discount_max" invisible="not is_high_discount" style="color: red;">
+                    <field name="discount_max_warning_message"/> Réévaluer la remise totale à moins de <field name="discount_max_allowed"/>%
+                </div>
+                <field name="is_discount_degradation" invisible="1"/>
+                <field name="is_high_discount" invisible="1"/>
+            </xpath>
+            <xpath expr="//div[@name='so_button_below_order_lines']" position="before">
+                <div class="alert alert-warning oe_edit_only" role="alert" name="warning_discount" invisible="not is_discount_degradation or is_high_discount">
+                    <field name="discount_warning_message"/> Réévaluer la remise totale à moins de <field name="discount_normal_max"/>%
+                </div>
+                <div class="alert alert-warning oe_edit_only" role="alert" name="warning_discount_max" invisible="not is_high_discount" style="color: red;">
+                    <field name="discount_max_warning_message"/> Réévaluer la remise totale à moins de <field name="discount_max_allowed"/>%
+                </div>
+                <field name="is_discount_degradation" invisible="1"/>
+                <field name="is_high_discount" invisible="1"/>
+            </xpath>
+            <!-- Placer après le champ phone -->
+            <xpath expr="//group[@name='sale_header']" position="after">
+                <field name="is_financing_payment_term" invisible="1" />
+                <group>
+                    <field name="date_souhait_client_livraison" />
+                    <field name="date_limite_livraison" />
+                </group>
+                <group col="4" string="Comptant" invisible="is_financing_payment_term">
+                    <group>
+                        <field name="choix_acompte" widget='radio' options="{'horizontal': True}" />
+                    </group>
+                    <group>
+                        <field name="acompte_commande_pourcentage"
+                            readonly="choix_acompte == 'euros'" widget="percentage"/>
+                    </group>
+                    <group>
+                        <field name="acompte_commande_montant"
+                            readonly="choix_acompte == 'pourcentage'" widget="monetary"/>
+                    </group>
+                    <field name="solde_fin_chantier" widget="monetary"/>
+                    <field name="payable_en" />
+                </group>
+
+                <group col="4" string="Financement" invisible="not is_financing_payment_term">
+                    <group>
+                        <field name="versement_commande" widget="monetary"/>
+                        <field name="versement_pose" widget="monetary"/>
+                        <field name="montant_financement" widget="monetary"/>
+                    </group>
+                    <group>
+                        <field name="duree_financement" />
+                        <field name="nombre_mensualites" />
+                    </group>
+                    <group>
+                        <field name="montant_mensualites_sans_assurance" widget="monetary"/>
+                        <field name="montant_mensualites_avec_assurance" widget="monetary"/>
+                    </group>
+                    <group>
+                        <field name="taux_annuel_nominal" widget="percentage"/>
+                        <field name="taux_annuel_effectif_global" widget="percentage"/>
+                    </group>
+                </group>
+
+                <button string="Créer le cerfa"
+                    name="action_open_cerfa_wizard"
+                    type="object"
+                    class="btn btn-secondary" />
+
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="second_salesperson_id" options="{&quot;no_create&quot;: True}"/>
+            </xpath>
+            <xpath expr="//button[@name='action_open_discount_wizard']" position="after">
+                <div groups="product.group_discount_per_so_line">
+                    <b>Remise totale : </b>
+                    <field nolabel="1" name="total_discount_percent" readonly="1" widget="percentage"/>
+                    soit : 
+                    <field nolabel="1" name="total_discount" readonly="1" widget="monetary"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_tree_order_inherit" model="ir.ui.view">
+        <field name="name">sale.order.tree.order.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="second_salesperson_id" widget="many2one_avatar_user" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_quotation_tree_second_salesperson_id" model="ir.ui.view">
+        <field name="name">sale.order.tree.second_salesperson_id (quotes)</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="second_salesperson_id" widget="many2one_avatar_user" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_order_view_search_inherit_quotation_custom" model="ir.ui.view">
+        <field name="name">sale.order.search.inherit.quotation.custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="arch" type="xml">
+            <!-- Cibler le filtre spécifique pour le modifier -->
+            <filter name="my_quotation" position="replace">
+                <!-- Nouvelle définition du filtre avec le domaine étendu -->
+                <filter string="My Quotations" name="my_quotation" 
+                        domain="['|', ('user_id', '=', uid), ('second_salesperson_id', '=', uid)]" groups="base.group_user" />
+            </filter>
+        </field>
+    </record>
+    
+</odoo>

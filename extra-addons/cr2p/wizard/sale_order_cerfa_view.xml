@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_order_cerfa_form" model="ir.ui.view">
+        <field name="name">sale.order.cerfa.form</field>
+        <field name="model">sale.order.cerfa</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="sale_order_id" invisible="1" />
+                    <group string="NATURE DES LOCAUX" col="1">
+                        <group>
+                            <field name="type_local" widget="radio" />
+                            <field name="type_local_autre"
+                                invisible="not type_local == 'autre'"
+                                required="type_local == 'autre'" />
+                            <field name="qualite_client" widget="radio" />
+                            <field name="qualite_client_autre"
+                                invisible="not qualite_client == 'autre'"
+                                required="qualite_client == 'autre'" />
+                        </group>
+                        <group>
+                            <field name="travaux_realises_dans" widget="radio" />
+                            <field name="proportion"
+                                invisible="not travaux_realises_dans == 'parties_communes_immeubles_collectifs_affectes_proportion'"
+                                required="travaux_realises_dans == 'parties_communes_immeubles_collectifs_affectes_proportion'" />
+                        </group>
+                    </group>
+                </sheet>
+                <sheet>
+                    <group string="NATURE DES TRAVAUX">
+                    </group>
+                    <span>J'atteste que <b>sur la période de deux ans précédant ou suivant la
+                        rélisation des travaux décrits dans la présente attestation</b>, les travaux
+                        : </span>
+                    <br />
+                    <div style="margin:10px;">
+                        <field name="non_affectent_elements_fondations_ouvrage_facade" required="1" />
+                        <span>N'affectent ni les fondations, ni les éléments, hors fondations,
+                            déterminant la résistance et la rigidité de l'ouvrage, ni la
+                            consistance
+                            des façades (hors ravalement).</span>
+                    </div>
+                    <div style="margin:10px;">
+                        <field name="non_affectent_plus_de_5_elements_second_oeuvre" required="1" />
+                        <span>N'affectent pas plus de cinq éléments de second oeuvre.</span>
+                    </div>
+                    <div style="margin:20px;">
+                        <div>
+                            <field name="planchers" />
+                            <span>Planchers qui ne déterminent pas la résistance et la rigidité
+                                de
+                                l'ouvrage</span>
+                        </div>
+                        <div>
+                            <field name="huisseries_exterieures" />
+                            <span>Huisseries extérieures</span>
+                        </div>
+                        <div>
+                            <field name="cloisons_interieures" />
+                            <span>Cloisons intérieures</span>
+                        </div>
+                        <div>
+                            <field name="installations_sanitaires" />
+                            <span>Installations sanitaires et de plomberie</span>
+                        </div>
+                        <div>
+                            <field name="installations_electriques" />
+                            <span>Installations électriques</span>
+                        </div>
+                        <div>
+                            <field name="systeme_chauffage" />
+                            <span>Système de chauffage (pour les immeubles situés en métropole)</span>
+                        </div>
+                    </div>
+                    <div style="margin:10px;">
+                        <div style="margin-bottom:5px;">
+                            <field name="non_augmentation_surface_plancher_10" />
+                            <span>N'entraînent pas une augmentation de la surface de plancher de la
+                                construction existante supérieure à 10 %.</span>
+                        </div>
+                        <div style="margin-bottom:5px;">
+                            <field name="non_surelevation_ou_addition_construction" />
+                            <span>Ne consistent pas en une surélévation ou une addition de
+                                construction.</span>
+                        </div>
+                        <div style="margin-bottom:5px;">
+                            <field name="atteste_travaux_amelioration_qualite_energetique" />
+                            <span>J'atteste que les travaux visent à améliorer la qualité du
+                                logement et
+                                portent sur la fourniture, la pose, l'installation ou l'entretien
+                                des
+                                matériaux, appareils et équipements dont la liste figure dans la
+                                notice.</span>
+                        </div>
+                        <div style="margin-bottom:5px;">
+                            <field name="atteste_travaux_amelioration_qualite_energetique_5_5" />
+                            <span>J'atteste que les travaux ont la nature ont la nature de travaux
+                                induits indissociablement liés à des travaux d'amélioration de la
+                                qualité énergétique soumis au taux de TVA 5,5 %.</span>
+                        </div>
+                    </div>
+                </sheet>
+                <footer>
+                    <button type="object" string="Générer l'attestation" name="action_generer_cerfa"
+                        class="btn btn-primary" data-hotkey="q" />
+                    <button special="cancel" string="Annuler" class="btn btn-secondary"
+                        data-hotkey="x" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

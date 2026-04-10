@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="crm_lead_product_type_pv" model="crm.lead.product.type">
+            <field name="name">PV</field>
+            <field name="code">PV</field>
+            <field name="color">10</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="crm_lead_product_type_bp" model="crm.lead.product.type">
+            <field name="name">BP</field>
+            <field name="code">BP</field>
+            <field name="color">4</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="crm_lead_product_type_pac" model="crm.lead.product.type">
+            <field name="name">PAC</field>
+            <field name="code">PAC</field>
+            <field name="color">1</field>
+            <field name="sequence">3</field>
+        </record>
+    </data>
+</odoo>

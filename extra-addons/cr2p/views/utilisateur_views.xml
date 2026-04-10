@@ -1,0 +1,43 @@
+<odoo>
+    <record id="view_users_simple_form_inherit" model="ir.ui.view">
+        <field name="name">res.users.simplified.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_simple_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group col="2">
+                    <group name="Informations utilisateur" string="Informations CR2P">
+                        <field name="civilite" />
+                        <field name="prenom" />
+                        <field name="nom" />
+                        <field name="date_naissance" />
+                        <field name="age" />
+                        <field name="login" widget="email" />
+                        <field name="phone" widget="phone" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_form_inherit" model="ir.ui.view">
+        <field name="name">res.users.form.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group col="2">
+                    <group name="Informations utilisateur" string="Informations CR2P">
+                        <field name="civilite" />
+                        <field name="prenom" />
+                        <field name="nom" />
+                        <field name="date_naissance" />
+                        <field name="age" />
+                        <field name="login" widget="email" />
+                        <field name="phone" widget="phone" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
