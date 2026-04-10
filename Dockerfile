@@ -79,7 +79,7 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
     && rm -rf /var/lib/apt/lists/* odoo.deb
 
 # Copy entrypoint script and custom Odoo configuration file
-COPY ./entrypoint.sh /
+COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 COPY ./odoo.conf /etc/odoo/
 
 # Copy enterprise addons and extra addons into the image
@@ -99,7 +99,7 @@ EXPOSE 8069 8071 8072
 # Set the default config file
 ENV ODOO_RC /etc/odoo/odoo.conf
 
-COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
+COPY --chmod=755 wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
 # Set default user when running the container
 USER odoo
